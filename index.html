@@ -46,56 +46,125 @@
         <div class="domain domain-left col-6 d-flex justify-content-center border" onclick="GetSelectedValue('java')"><p class="m-1">Java</p></div>
     </div>
 
-    <script type="text/javascript" src="CPP-Questions-and-Solutions-ranklist.json"></script>
-    <script>
-                    
-
+    <div>
+        <div class="row bg-dark text-light mb-2" id="heading-ranklist"></div>
+    </div>
+    <script>          
         function GetSelectedValue(value){ 
-            print = '<div class="rank-chart">\
-            <table class="table">\
-                <thead>\
-                    <tr>\
-                    <th scope="col">Rank</th>\
-                    <th scope="col">Name</th>\
-                    <th scope="col">Points</th>\
-                    </tr>\
-                </thead>\
-                <tbody>'
+
+            document.getElementById('heading-ranklist').innerHTML = '<a href="#">Github Repository - CPP-Questions-and-Solutions</a>';
                 var oXHR = new XMLHttpRequest();
 
                 // Initiate request.
                 oXHR.onreadystatechange = reportStatus;
-                oXHR.open("GET", "CPP-Questions-and-Solutions-ranklist.json", true);  // get json file.
+                var file_name=""
+                if(value=='cpp')
+                {
+                    file_name = "CPP-Questions-and-Solutions-ranklist.json"
+                    document.getElementById('heading-ranklist').innerHTML = '<a href="https://github.com/SarthakKeshari/CPP-Questions-and-Solutions" class="d-flex text-light justify-content-center p-1" style="text-decoration:none">Github Repository - SarthakKeshari/CPP-Questions-and-Solutions</a>';
+                }
+                else
+                {
+                    file_name = "Java-Questions-and-Solutions-ranklist.json"
+                    document.getElementById('heading-ranklist').innerHTML = '<a href="https://github.com/SarthakKeshari/Java-Questions-and-Solutions" class="d-flex text-light justify-content-center p-1" style="text-decoration:none">Github Repository - SarthakKeshari/Java-Questions-and-Solutions</a>';
+                }
+                oXHR.open("GET", file_name, true);  // get json file.
                 oXHR.send();
-
+                var name = [];
+                var points = [];
                 function reportStatus() {
                     if (oXHR.readyState == 4) {		// Check if request is complete.
                         var arrBirds = [];
-                        arrBirds = JSON.parse(this.responseText); 	// Convert JSON to array.
+                        a = this.responseText
+                        file = JSON.parse(a); 	// Convert JSON to array.
 
-                        var col = [];
-                        for (var i = 0; i < arrBirds.length; i++) {
-                            for (var key in arrBirds[i]) {
-                                if (col.indexOf(key) === -1) {
-                                    col.push(key);
-                                }
-                            }
+                        // console.log(file.contributors[0])
+                        
+                        for (var i = 0; i < file.contributors.length; i++) {
+                           //for(var key in file.contributors[i])
+                           //{
+                           //    console.log(key)
+                           //}
+
+                           name.push(file.contributors[i].Name)
+                           points.push(Number(file.contributors[i].Points))
+
+                           
                         }
-                        document.getElementById('result').innerHTML = col;
+
+                    //console.log(name)
+                    //console.log(points[0])
+
+                   selectionSort(points,name)
+                        
+                    }
+
+                    
+                }
+
+            function selectionSort(inputArr, inputArr1) { 
+                let n = inputArr.length;
+                    
+                for(let i = 0; i < n; i++) {
+                    // Finding the smallest number in the subarray
+                    let min = i;
+                    for(let j = i+1; j < n; j++){
+                        if(inputArr[j] > inputArr[min]) {
+                            min=j; 
+                        }
+                    }
+                    if (min != i) {
+                        // Swapping the elements
+                        let tmp = inputArr[i]; 
+                        inputArr[i] = inputArr[min];
+                        inputArr[min] = tmp; 
+
+                        let tmp1 = inputArr1[i]; 
+                        inputArr1[i] = inputArr1[min];
+                        inputArr1[min] = tmp1;  
                     }
                 }
+                    
+                console.log(inputArr);
+                console.log(inputArr1);
+                printing(inputArr1, inputArr)
+            }
             
+            function printing(all_names, all_points)
+            {
+                var print = '<div class="rank-chart">\
+                <table class="table">\
+                    <thead class="bg-light">\
+                        <tr>\
+                        <th scope="col">Rank</th>\
+                        <th scope="col">Name</th>\
+                        <th scope="col">Points</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody>'
+                for(i=0;i<all_names.length;i++)
+                {
+                    print=print+'<tr>\
+                        <td>'+(i+1)+'</td>\
+                        <td>'+all_names[i]+'</td>\
+                        <td>'+all_points[i]+'</td>\
+                    </tr>'
+                }
 
-            print = print+'</tbody>\
-                </table>\
-                </div>'
+                print = print+'</tbody>\
+                    </table>\
+                    </div>'
+
+                document.getElementById('result').innerHTML = print;
+            }
+            
 
             
         }
         
     </script>
 
-    <p id="result">Hello</p>
+    <p id="result"></p>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
