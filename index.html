@@ -70,7 +70,18 @@
 
                 function reportStatus() {
                     if (oXHR.readyState == 4) {		// Check if request is complete.
-                        document.getElementById('result').innerHTML = this.responseText;
+                        var arrBirds = [];
+                        arrBirds = JSON.parse(this.responseText); 	// Convert JSON to array.
+
+                        var col = [];
+                        for (var i = 0; i < arrBirds.length; i++) {
+                            for (var key in arrBirds[i]) {
+                                if (col.indexOf(key) === -1) {
+                                    col.push(key);
+                                }
+                            }
+                        }
+                        document.getElementById('result').innerHTML = col;
                     }
                 }
             
